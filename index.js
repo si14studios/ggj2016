@@ -7,10 +7,9 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
-  accept();
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
+  socket.on('speak', function(msg){
+    io.emit('speak', 'message?');
+    console.log('ping received with payload: ' + msg);
   });
 });
 
