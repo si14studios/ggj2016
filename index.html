@@ -2,9 +2,13 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
-
+    <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
-  <body>
+  <body onload="init();">
+      <canvas id="gameCanvas" width="500" height="300"></canvas>
+      <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+      <script src="js/canvas.js"></script>
+
       <script src="/socket.io/socket.io.js"></script>
       <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
       <script>
