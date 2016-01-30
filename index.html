@@ -1,31 +1,12 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>GGJ</title>
 
   </head>
   <body>
       <script src="/socket.io/socket.io.js"></script>
       <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-      <script>
-        var socket = io();
-        $(document).ready(function() {
-          $('#butt').on('click', function(){
-            console.log('pinging mission control')
-            socket.emit('speak', 'PING PING YY');
-            //return false;
-          });
-      });
-        socket.on('speak', function(msg){
-          console.log('captain, weve been pinged')
-        });
-
-        //$(window).on('beforeunload', function(){
-        //  socket.close();
-        //});
-      </script>
-
-      <button id='butt'>ayy button</button>
-
+      <script src="/script.js"></script>
   </body>
 </html>
