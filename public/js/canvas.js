@@ -1,46 +1,59 @@
-function init() {
-//Creates the Game Stage
 var stage = new createjs.Stage("gameCanvas");
 
-//Creates game ticker and function tick()
-createjs.Ticker.addEventListener("tick",tick);
-createjs.Ticker.setFPS(60);
-createjs.Ticker.on("Tick",handleTick);
-function tick() {console.log("*");}
-
-var archerRunSpriteSheet = new Image();
-archerRunSpriteSheet.src = "../assets/sprites/archer/Ranger/3x/archerRunSprSh.png";
-
-var archerRun = new createjs.SpriteSheet({
-  images: archerRunSpriteSheet,
-  frames: {regX: 0, height: 96, count: 10, regY: 0, width: 75},
-  animations: {walk: [0, 9]}
-});
-
-var archer = new createjs.Sprite(archerRunSpriteSheet,"walk");
-archer.play();
+function init() {
+  socketRun();
+  addArcherRun();
+  ticker();
+  stage.update();
+}
 
 function handleTick(event) {
   stage.update(event);
+  console.log("what up son");
 }
 
-var socket = io();
-var role = 'unassigned';
+function ticker() {
+  createjs.Ticker.setFPS(60);
+  createjs.Ticker.addEventListener("tick",handleTick);
+}
 
-$(document).ready(function() {
+function addArcherRun() {
+  var archerRunImage = new Image();
+  archerRunImage.src = "../assets/sprites/archer/Ranger/3x/archerRunSpriteSheet.png";
 
-});
+  var archerRunSpriteSheet = new createjs.SpriteSheet({
+    framerate: 5,
+    images: [archerRunImage],
+    frames: {width: 120, height: 87},
+    animations: {
+        walk: [0, 4]
+    }
+  });
 
-socket.on('assign role', function(r) {
+  var archerRunSprite = new createjs.Sprite(archerRunSpriteSheet, "walk");
+  archerRunSprite.y = 50;
+  archerRunSprite.x = 50;
+  stage.addChild(archerRunSprite);
+}
+//------------------------------------------------------------------------------
+//Socket stuff that peter said I needed in the file
+function socketRun() {
+  var socket = io();
+  var role = 'unassigned';
+
+  $(document).ready(function() {});
+
+  socket.on('assign role', function(r) {
     role = r;
     $('body').append('Role: ' + role);
-});
+  });
 
-socket.on('request role', function() {
-    socket.emit('send role', role);
-});
+  socket.on('request role', function() {
+      socket.emit('send role', role);
+  });
 
-socket.on('request check in', function() {
-    socket.emit('check in', role);
-  })
+  socket.on('request check in', function() {
+     socket.emit('check in', role);
+  });
+
 }
