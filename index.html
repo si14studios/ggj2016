@@ -1,35 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>GGJ</title>
   </head>
   <body onload="init();">
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+      <script src="/script.js"></script>
+
       <canvas id="gameCanvas" width="500" height="300"></canvas>
       <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
       <script src="js/canvas.js"></script>
-
-      <script src="/socket.io/socket.io.js"></script>
-      <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-      <script>
-        var socket = io();
-        $(document).ready(function() {
-          $('#butt').on('click', function(){
-            console.log('pinging mission control')
-            socket.emit('speak', 'PING PING YY');
-            //return false;
-          });
-      });
-        socket.on('speak', function(msg){
-          console.log('captain, weve been pinged')
-        });
-
-        //$(window).on('beforeunload', function(){
-        //  socket.close();
-        //});
-      </script>
-
-      <button id='butt'>ayy button</button>
-
   </body>
 </html>
