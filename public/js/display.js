@@ -1,221 +1,277 @@
-  //Sprite varibles
-  var players;
-  var platforms;
+//Sprite varibles
+var players;
+var platforms;
 
-  var characters = [];
-  characters["gentleman"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/gentleman - sprite_sheet.png"
+var characters = [];
+characters["gentleman"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/gentleman - sprite_sheet.png"
+});
+characters["mechanic"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/mechanic - sprite_sheet.png"
+});
+characters["ninja"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ninja - sprite_sheet.png"
+});
+characters["pirate"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/pirate - sprite_sheet.png"
+});
+characters["ranger"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ranger - sprite_sheet.png"
+});
+characters["viking"] = makePlayer({
+  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/viking - sprite_sheet.png"
+});
+
+//Main function
+function display() {
+  // Boring library inits
+
+  socket.on('add user', function(uname, character) {
+      $('ul').append('<li>' + uname + ' (' + character + ') </li>');
+      var player = makePlayer({
+        x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, username: uname, sprite: "../assets/spriteSheets/" + character + " - sprite_sheet.png"
+      });
+
+      players[uname] = player;
+      stage.addChild(player);
+
+      console.log(players);
   });
-  characters["mechanic"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/mechanic - sprite_sheet.png"
+  socket.on('remove user', function(username) {
+
   });
-  characters["ninja"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ninja - sprite_sheet.png"
+  socket.on('display input', function(input, uname) {
+      console.log(uname + ': ' + input);
+          if (input == 'up') {
+              players[uname].vel.dy = -10;
+          }
+          if (input == 'right') {
+              players[uname].vel.dx += 2;
+          }
+          if (input == 'left') {
+              players[uname].vel.dx += -2;
+          }
+          if (input == 'down') {
+
+          }
+
   });
-  characters["pirate"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/pirate - sprite_sheet.png"
-  });
-  characters["ranger"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ranger - sprite_sheet.png"
-  });
-  characters["samurai"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/samurai - sprite_sheet.png"
-  });
-  characters["viking"] = makePlayer({
-  	x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/viking - sprite_sheet.png"
+
+  $('#begin').click(function() {
+      socket.emit('begin match');
   });
 
-  //Main function
-  function display() {
-  	// Boring library inits
+  // controls
 
-  	// controls
+/*
+  kd.RIGHT.down(function () {
+      players[0].vel.dx += 2;
+  });
+  kd.LEFT.down(function() {
+      players[0].vel.dx += -2;
+  });
+  Mousetrap.bind('up', function() {
+      players[0].vel.dy = -10;
+      //characters["ranger"].gotoAndPlay("jump");
+  }, 'keydown');
+*/
 
-  	kd.RIGHT.down(function () {
-  		players[0].vel.dx += 2;
-  	});
-  	kd.LEFT.down(function() {
-  		players[0].vel.dx += -2;
-  	});
-  	Mousetrap.bind('up', function() {
-  		players[0].vel.dy = -10;
-  		characters["ninja"].gotoAndPlay("jump");
-  	}, 'keydown');
-
-  	// Movement Animation
-  	Mousetrap.bind('up', function() {characters["ninja"].gotoAndStop("jump"); characters["ninja"].gotoAndPlay("walk")}, 'keyup');
-  	Mousetrap.bind('right', function() {characters["ninja"].gotoAndPlay("walk");}, 'keydown');
-  	Mousetrap.bind('right', function() {characters["ninja"].gotoAndPlay("idle");}, 'keyup');
-  	Mousetrap.bind('left', function() {characters["ninja"].gotoAndPlay("walk");}, 'keydown');
-  	Mousetrap.bind('left', function() {characters["ninja"].gotoAndPlay("idle");}, 'keyup');
-  	//$(document).mousem
-
-
-  	// [stage setup]
-    // Make canvas full screen
-  	var canvas = document.getElementById('gameCanvas');
-  	canvas.height = window.innerHeight - 50;
-  	canvas.width = window.innerWidth;
-
-  	// Make canvas not blurry
-  	var context = canvas.getContext('2d');
-  	context.webkitImageSmoothingEnabled = false;
-  	context.mozImageSmoothingEnabled = false;
-  	context.imageSmoothingEnabled = false;
-
-  	stage = new createjs.Stage("gameCanvas");
-  	// [/stage setup]
-
-  	// Setup ticker
-  	createjs.Ticker.setFPS(60);
-  	createjs.Ticker.addEventListener("tick",handleTick);
-
-  	/*
-  	var archer = makePlayer({
-  		x: 100,
-  		y: 100,
-  		width: 40,
-  		height: 50,
-  		veldx: 0,
-  		veldy: 0,
-  		oldVel: 0,
-  		sprite: "../assets/spriteSheets/ranger - sprite_sheet.png"
-  	});
-  	stage.addChild(archer);
-  	*/
-  	//stage.addChild(characters["ninja"]);
-  	//stage.addChild(characters["mechanic"]);
-  	stage.addChild(characters["ninja"]);
+  // Movement Animation
+  /*Mousetrap.bind('up', function() {characters["ranger"].gotoAndStop("jump"); characters["ranger"].gotoAndPlay("walk")}, 'keyup');
+  Mousetrap.bind('right', function() {characters["ranger"].gotoAndPlay("walk");}, 'keydown');
+  Mousetrap.bind('right', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
+  Mousetrap.bind('left', function() {characters["ranger"].gotoAndPlay("walk");}, 'keydown');
+  Mousetrap.bind('left', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
+  Mousetrap.bind('down', function() {characters["ranger"].gotoAndPlay("attack");}, 'keydown');
+  Mousetrap.bind('down', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
+  */
+  //$(document).mousem
 
 
-    var shape = new createjs.Shape();
-    shape.graphics.beginFill("#ff0000").drawRect(0, 250, 2000, 50);
-    stage.addChild(shape);
+  // [stage setup]
+  // Make canvas full screen
+  var canvas = document.getElementById('gameCanvas');
+  canvas.height = window.innerHeight - 50;
+  canvas.width = window.innerWidth;
 
-  	var ground = {x: 0, y: 250, width: 2000, height: 50};
-  	var block = makePlatform({x: 250, y: 200, width: 50, height: 50});
-  	console.log(block);
-  	stage.addChild(block.shape);
+  // Make canvas not blurry
+  var context = canvas.getContext('2d');
+  context.webkitImageSmoothingEnabled = false;
+  context.mozImageSmoothingEnabled = false;
+  context.imageSmoothingEnabled = false;
 
-  	players = [characters["ninja"]];
-  	console.log(players[0].animation);
-  	platforms = [ground, block];
-  }
+  stage = new createjs.Stage("gameCanvas");
+  // [/stage setup]
 
-  //Creates handleTick function to handle the tick
-  function handleTick(event) {
-    stage.update(event);
-  	kd.tick()
+  // Setup ticker
+  createjs.Ticker.setFPS(60);
+  createjs.Ticker.addEventListener("tick",handleTick);
 
-  	for (var i = 0; i < players.length; i++) {
-  		// player
-  		var play = players[i];
+  //var level = makeLevel();
+  //stage.addChild(level);
 
-  		// update player position
-  		play.x += play.vel.dx;
-  	  play.y += play.vel.dy;
+  players = [];
+  platforms = [];
+  makeLevel();
+}
 
-  		// sync rectangle with positon
-  		play.rect.x = play.x + 35;
-  		play.rect.y = play.y + 26;
+//Creates handleTick function to handle the tick
+function handleTick(event) {
+  stage.update(event);
+  kd.tick()
 
-  		// Apply gravity
-  	  var grav = 1 - 0.01;
-  	  play.vel.dy += grav;
+  var keys = Object.keys(players);
+  for (var i = 0; i < keys.length; i++) {
 
-  		// Apply friction
-  		var tolerance = 0.5
-  		if (play.vel.dx > tolerance || play.vel.dx < -tolerance) {
-  			var friction = 0.8;
-  			//var s = (play.vel.dx > 0) ? -1 : 1;
-  			play.vel.dx *= (friction);
-  	  } else {
-  			play.vel.dx = 0;
-  		}
+      // player
+      var play = players[keys[i]];
 
-  		// Detect collisions on all platforms
-  		for(var j = 0; j < platforms.length; j++) {
+      // update player position
+      play.x += play.vel.dx;
+    play.y += play.vel.dy;
 
-  			// platform
-  			var plat = platforms[j];
+      // sync rectangle with positon
+      play.rect.x = play.x + 35;
+      play.rect.y = play.y + 26;
 
-  			var result = collides(play.rect, plat);
-  			var collided = result.bool;
-  			var overlap = result.overlap;
-  			if (collided) {
-  				if (overlap.x > 0) {
-  					play.vel.dx = 0;
-  				}
-  				if (overlap.y > 0) {
-  					play.vel.dy = 0;
-  				}
-  				play.x -= overlap.x;
-  				play.y -= overlap.y;
-  			}
-  		}
-  	}
-  }
+      // Apply gravity
+    var grav = 1 - 0.01;
+    play.vel.dy += grav;
 
-  //All collisions relative to player
-  //(player, rectangle)
-  function collides(rect1, rect2) {
-  	var a = new SAT.Box(new SAT.Vector(rect1.x,rect1.y), rect1.width, rect1.height).toPolygon();
-  	var b = new SAT.Box(new SAT.Vector(rect2.x,rect2.y), rect2.width, rect2.height).toPolygon();
-  	var response = new SAT.Response();
-  	var collided = SAT.testPolygonPolygon(a, b, response);
-  	return {bool: collided, overlap: response.overlapV};
-  }
-
-  function makeSpriteSheet(x) {
-    var spriteImage = new Image();
-    spriteImage.src = x;
-
-    spriteSheet = new createjs.SpriteSheet({
-      framerate: 20,
-      images: [x],
-      frames: {width: 120, height: 87},
-      animations: {
-          walk: [18, 23],
-  				idle: {
-  					frames: [7, 9],
-  					speed: 0.2
-  				},
-  				jump: {
-  					frames: [12,15],
-  					speed: 0.2
-  				}
+      // Apply friction
+      var tolerance = 0.5
+      if (play.vel.dx > tolerance || play.vel.dx < -tolerance) {
+          var friction = 0.8;
+          //var s = (play.vel.dx > 0) ? -1 : 1;
+          play.vel.dx *= (friction);
+    } else {
+          play.vel.dx = 0;
       }
-    });
 
-    return spriteSheet;
+      // Detect collisions on all platforms
+      for(var j = 0; j < platforms.length; j++) {
+
+          // platform
+          var plat = platforms[j];
+
+          var result = collides(play.rect, plat);
+          var collided = result.bool;
+          var overlap = result.overlap;
+          if (collided) {
+              if (overlap.x > 0) {
+                  play.vel.dx = 0;
+              }
+              if (overlap.y > 0) {
+                  play.vel.dy = 0;
+              }
+              play.x -= overlap.x;
+              play.y -= overlap.y;
+          }
+      }
+  }
+}
+
+//All collisions relative to player
+//(player, rectangle)
+function collides(rect1, rect2) {
+  var a = new SAT.Box(new SAT.Vector(rect1.x,rect1.y), rect1.width, rect1.height).toPolygon();
+  var b = new SAT.Box(new SAT.Vector(rect2.x,rect2.y), rect2.width, rect2.height).toPolygon();
+  var response = new SAT.Response();
+  var collided = SAT.testPolygonPolygon(a, b, response);
+  return {bool: collided, overlap: response.overlapV};
+}
+
+function makeSpriteSheet(x) {
+  var spriteImage = new Image();
+  spriteImage.src = x;
+
+  spriteSheet = new createjs.SpriteSheet({
+    framerate: 20,
+    images: [x],
+    frames: {width: 120, height: 87},
+    animations: {
+        walk: [18, 23],
+              idle: {
+                  frames: [7, 9],
+                  speed: 0.2
+              },
+              jump: {
+                  frames: [12,15],
+                  speed: 0.2
+              },
+        attack: {
+          frames: [0,2],
+          speed: 0.5
+        }
+    }
+  });
+
+  return spriteSheet;
+}
+
+// {x: ?, y: ?, width: ?, height: ?, veldx: ?, veldy: ?, sprite: ?, username: ?}
+function makePlayer(prop) {
+  // setup characters
+  var ss = makeSpriteSheet(prop.sprite);
+  var player = new createjs.Sprite(ss, "idle");
+
+  player.x = prop.x;
+  player.y = prop.y;
+  player.rect = {x: player.x, y: player.y, width: prop.width, height: prop.height}
+  player.vel = {dx: prop.veldx, dy: prop.veldy};
+  player.username = prop.username;
+
+
+  return player;
+}
+
+function makePlatform(info) {
+  var rect = {
+      x: info.x,
+      y: info.y,
+      width: info.width,
+      height: info.height
+  };
+
+  var rectShape = new createjs.Shape();
+  rectShape.graphics.beginFill("black").drawRect(rect.x, rect.y, rect.width, rect.height);
+  rect.shape = rectShape;
+
+  return rect;
+}
+
+function makeLevel() {
+  var level = {};
+  level.floor = makePlatform({x: 0,y: (window.innerHeight - 55),width: (window.innerWidth),height: 10});
+  platforms.push(level.floor);
+  stage.addChild(level.floor.shape);
+  level.ceiling = makePlatform({x: 0, y: 0, width: (window.innerWidth), height: 10});
+  platforms.push(level.ceiling);
+  stage.addChild(level.ceiling.shape);
+
+  for (i = 0; i < 7; i++) {
+    var platInfo = {
+      x: (Math.random() * window.innerWidth) + 87,
+      y: (Math.random() * window.innerHeight) + 87,
+      width: ((Math.random() * 100) + 50) * 4,
+      height: ((Math.random() * 100) + 50) * 2
+    }
+    var platform = makePlatform(platInfo);
+    for(var j = 0; j < platforms.length; j++) {
+      while(collides(platform, platforms[j]).bool) {
+        platInfo = {
+          x: (Math.random() * window.innerWidth) + 87,
+          y: (Math.random() * window.innerHeight) + 87,
+          width: ((Math.random() * 100) + 50) * 4,
+          height: ((Math.random() * 100) + 50) * 2
+        }
+        platform = makePlatform(platInfo);
+    }
   }
 
-  // {x: ?, y: ?, width: ?, height: ?, veldx: ?, veldy: ?, sprite: ?}
-  function makePlayer(prop) {
-  	// setup characters
-  	var ss = makeSpriteSheet(prop.sprite);
-  	var player = new createjs.Sprite(ss, "idle");
-
-  	player.x = prop.x;
-  	player.y = prop.y;
-  	player.rect = {x: player.x, y: player.y, width: prop.width, height: prop.height}
-  	player.vel = {dx: prop.veldx, dy: prop.veldy};
-
-
-  	return player;
-  }
-
-  function makePlatform(info) {
-  	var rect = {
-  		x: info.x,
-  		y: info.y,
-  		width: info.width,
-  		height: info.height
-  	};
-
-  	var rectShape = new createjs.Shape();
-  	rectShape.graphics.beginFill("black").drawRect(rect.x, rect.y, rect.width, rect.height);
-  	rect.shape = rectShape;
-
-  	return rect;
-  }
+  platforms.push(platform);
+  console.log(platform.x + " " + platform.y);
+  stage.addChild(platform.shape);
+}
+  return level;
+}

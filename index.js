@@ -30,10 +30,9 @@ io.on('connection', function(socket) {
     });
     socket.emit('request role');
 
-    socket.on('register user', function(user) {
-        socket.broadcast.emit('add user', user);
-        users[user.name] = {name: user.name, sock: socket, character: user.character}
-        console.log(users);
+    socket.on('register user', function(username, character) {
+        socket.broadcast.emit('add user', username, character);
+        users[username] = {name: username, sock: socket, character: character}
     });
 
     // sets hasDisplay to true if the display is assigned
@@ -43,14 +42,20 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('stream input', function(input) {
-        socket.broadcast.emit('display input', input);
+    socket.on('stream input', function(input, user) {
+        console.log(user + ': ' + input);
+        socket.broadcast.emit('display input', input, user);
+    });
+
+    socket.on('begin match', function() {
+        socket.broadcast.emit('deal target', 'peter', 'mike');
+        console.log('dealing targets');
     });
 
     // Fires when someone disconnects
     socket.on('disconnect', function() {
         hasDisplay = false;
-        socket.broadcast.emit('request check in');
+        io.sockets.emit('request check in');
     });
 });
 

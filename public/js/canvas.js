@@ -8,14 +8,7 @@ socket.on('assign role', function(r) {
     $(document).ready(function() {
 
         if (role == 'display') {
-            socket.on('add user', function(user) {
-                $('ul').append('<li>' + user.name + ' (' + user.character + ') </li>');
-            });
-            socket.on('display input', function(input) {
-                console.log(input);
-            });
-
-						display();
+			display();
         }
         else if (role == 'controller') {
         	controller();

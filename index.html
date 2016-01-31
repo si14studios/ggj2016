@@ -2,7 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> <!--320-->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/sapo.css"> <!-- inks css file -->
     <title>GGJ</title>
   </head>
   <body>
@@ -10,6 +11,7 @@
       <display style="display: none">
           You are the display!
           <canvas id="gameCanvas"></canvas>
+          <button id="begin">Begin Game</button>
           <ul></ul>
       </display>
 
@@ -56,12 +58,6 @@
                           ranger
                         </figcaption>
                     </figure>
-                    <figure class="ink-image" id="samurai">
-                        <img src="/assets/thumbnails/thumbnail - samurai.png">
-                        <figcaption class="dark">
-                          Samurai
-                        </figcaption>
-                    </figure>
                     <figure class="ink-image" id="viking">
                         <img src="/assets/thumbnails/thumbnail - viking.png">
                         <figcaption class="dark">
@@ -75,28 +71,30 @@
               <div id='name'></div>
               <div id='character'></div>
               <br>
-              <div id='instructions'>Instruction 1 <br> Instruction 2 <br> Instruction 3</div>
-              <div id='controls'>
-                  <img src="/assets/keys/blank.png"></img>
-                  <img src="/assets/keys/line-up.png" class="key" id="up"></img>
-                  <img src="/assets/keys/blank.png"></img>
+              <div id='instructions'>
 
-                  <img src="/assets/keys/line-left.png" class="key" id="left"></img>
-                  <img src="/assets/keys/line-a.png" class="key" id="a"></img>
-                  <img src="/assets/keys/line-right.png" class="key" id="right"></img>
+              </div>
+              <div id='controls'>
+
+                  <div class="shield"><img src="/assets/keys/blank.png"></img></div>
+                  <div class="shield up"><img src="/assets/keys/line-up.png" class="key" id="up" ></img></div>
+                  <div class="shield"><img src="/assets/keys/blank.png"></img></div>
+
+                  <div class="shield left"><img src="/assets/keys/line-left.png" class="key" id="left"></img></div>
+                  <div class="shield a"><img src="/assets/keys/line-a.png" class="key" id="a"></img></div>
+                  <div class="shield right"><img src="/assets/keys/line-right.png" class="key" id="right"></img></div>
               </div>
           </div>
       </controller>
 
       <script src="/socket.io/socket.io.js"></script>
-      <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-
-      <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
-      <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js?71631"></script>
-      <script src="https://jeremyckahn.github.io/keydrown/dist/keydrown.min.js"></script>
-      <script src="https://raw.githubusercontent.com/jriecken/sat-js/master/SAT.min.js"></script>
-      <script src="js/display.js"></script>
-      <script src="js/controller.js"></script>
-      <script src="js/canvas.js"></script>
+      <script src="/js/jquery.js"></script>
+      <script src="/js/easle.js"></script>
+      <script src="/js/mousetrap.js"></script>
+      <script src="/js/keydrown.js"></script>
+      <script src="/js/SAT.js"></script>
+      <script src="/js/display.js"></script>
+      <script src="/js/controller.js"></script>
+      <script src="/js/canvas.js"></script>
   </body>
 </html>
