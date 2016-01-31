@@ -42,14 +42,40 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('stream input', function(input, user) {
-        console.log(user + ': ' + input);
-        socket.broadcast.emit('display input', input, user);
+    socket.on('stream input', function(input, user, target) {
+        socket.broadcast.emit('display input', input, user, target);
     });
 
     socket.on('begin match', function() {
-        socket.broadcast.emit('deal target', 'peter', 'mike');
-        console.log('dealing targets');
+
+        var dealto = Object.keys(users);
+        var dealfrom = Object.keys(users);
+        for (var to = 0; to < dealto.length; to++) {
+          var choice = dealfrom[Math.floor(Math.random() * dealfrom.length)];
+          while (choice == dealto[to]) {
+            choice = dealfrom[Math.floor(Math.random() * dealfrom.length)];
+          }
+          socket.broadcast.emit('deal target', choice, dealto[to]);
+        }
+    });
+
+    socket.on('announce death', function(killed) {
+      delete users[killed];
+      socket.broadcast.emit('announce death', killed);
+    });
+
+    socket.on('request new target', function(uname) {
+
+      var dealfrom = Object.keys(users);
+      var choice = dealfrom[Math.floor(Math.random() * dealfrom.length)];
+      while (choice == uname) {
+        choice = dealfrom[Math.floor(Math.random() * dealfrom.length)];
+      }
+      io.sockets.emit('deal target', choice, uname);
+    });
+
+    socket.on('release player', function(username) {
+      socket.broadcast.emit('release player', username);
     });
 
     // Fires when someone disconnects
@@ -57,9 +83,14 @@ io.on('connection', function(socket) {
         hasDisplay = false;
         io.sockets.emit('request check in');
     });
+
 });
 
 // Starts server
 http.listen(80, function(){
     console.log('listening on *:80');
+    
+    require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+      console.log('To play, type this IP into the browser of your choice: '+add);
+    })
 });

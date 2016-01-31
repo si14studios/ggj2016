@@ -1,92 +1,95 @@
-//Sprite varibles
+ //Sprite varibles
 var players;
 var platforms;
+var begun = false;
+var startText, titleText;
 
-var characters = [];
-characters["gentleman"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/gentleman - sprite_sheet.png"
-});
-characters["mechanic"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/mechanic - sprite_sheet.png"
-});
-characters["ninja"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ninja - sprite_sheet.png"
-});
-characters["pirate"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/pirate - sprite_sheet.png"
-});
-characters["ranger"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/ranger - sprite_sheet.png"
-});
-characters["viking"] = makePlayer({
-  x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, sprite: "../assets/spriteSheets/viking - sprite_sheet.png"
-});
+var stage;
 
 //Main function
 function display() {
   // Boring library inits
 
   socket.on('add user', function(uname, character) {
-      $('ul').append('<li>' + uname + ' (' + character + ') </li>');
       var player = makePlayer({
         x: 0, y: 0, width: 40, height: 50, veldx: 0, veldy: 0, username: uname, sprite: "../assets/spriteSheets/" + character + " - sprite_sheet.png"
       });
 
       players[uname] = player;
       stage.addChild(player);
+      stage.addChild(player.nameText);
 
-      console.log(players);
   });
   socket.on('remove user', function(username) {
 
   });
-  socket.on('display input', function(input, uname) {
-      console.log(uname + ': ' + input);
+  socket.on('display input', function(input, uname, utarget) {
           if (input == 'up') {
               players[uname].vel.dy = -10;
+              if (players[uname].currentAnimation != "jump") {
+                  players[uname].gotoAndPlay("jump");
+                }
           }
           if (input == 'right') {
               players[uname].vel.dx += 2;
+          if (players[uname].currentAnimation != "walk") {
+              players[uname].gotoAndPlay("walk");
+            }
           }
           if (input == 'left') {
               players[uname].vel.dx += -2;
+              if (players[uname].currentAnimation != "walk") {
+                  players[uname].gotoAndPlay("walk");
+                }
           }
-          if (input == 'down') {
+          if (input == 'a') {
+            if (players[uname].currentAnimation != "attack") {
+                players[uname].gotoAndPlay("attack");
+              }
 
+            if (begun) {
+            var keys = Object.keys(players);
+            for (var i = 0; i < keys.length; i++) {
+              var play = players[keys[i]];
+              if (play.username != uname) {
+                  if (collides(play.rect, players[uname].rect).bool) {
+                    var attackx = players[uname].x;
+                    var victimx = play.x;
+                    if (victimx - attackx > 0) {
+                      play.vel.dx += 5;
+                      play.vel.dy -= 2;
+                    } else {
+                      play.vel.dx -= 5;
+                      play.vel.dy -= 2;
+                    }
+
+                    play.hp -= 2;
+                    play.nameText.text = play.username + "(" + play.hp + "hp)", "10px Arial","#0000ff";
+
+                    // killed player
+                    if (play.hp < 0) {
+                      if(play.username == utarget) {
+                        players[uname].hp += 10;
+                        play.nameText.text = play.username + "(" + play.hp + "hp)", "10px Arial","#0000ff";
+                      } else {
+                        players[uname].hp -= 10;
+                        play.nameText.text = play.username + "(" + play.hp + "hp)", "10px Arial","#0000ff";
+                      }
+                    }
+                  }
+              }
+            }
+          }
           }
 
   });
 
   $('#begin').click(function() {
       socket.emit('begin match');
+      begun = true;
+      stage.removeChild(startText);
+      stage.removeChild(titleText);
   });
-
-  // controls
-
-/*
-  kd.RIGHT.down(function () {
-      players[0].vel.dx += 2;
-  });
-  kd.LEFT.down(function() {
-      players[0].vel.dx += -2;
-  });
-  Mousetrap.bind('up', function() {
-      players[0].vel.dy = -10;
-      //characters["ranger"].gotoAndPlay("jump");
-  }, 'keydown');
-*/
-
-  // Movement Animation
-  /*Mousetrap.bind('up', function() {characters["ranger"].gotoAndStop("jump"); characters["ranger"].gotoAndPlay("walk")}, 'keyup');
-  Mousetrap.bind('right', function() {characters["ranger"].gotoAndPlay("walk");}, 'keydown');
-  Mousetrap.bind('right', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
-  Mousetrap.bind('left', function() {characters["ranger"].gotoAndPlay("walk");}, 'keydown');
-  Mousetrap.bind('left', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
-  Mousetrap.bind('down', function() {characters["ranger"].gotoAndPlay("attack");}, 'keydown');
-  Mousetrap.bind('down', function() {characters["ranger"].gotoAndPlay("idle");}, 'keyup');
-  */
-  //$(document).mousem
-
 
   // [stage setup]
   // Make canvas full screen
@@ -113,6 +116,18 @@ function display() {
   players = [];
   platforms = [];
   makeLevel();
+
+  var titleHYPE = "Sacrifice your Friends!";
+  titleText = new createjs.Text(titleHYPE, "40px Roboto", "#4DB4D6");
+  titleText.x = 50;
+  titleText.y = 25;
+  stage.addChild(titleText);
+  var story = "The evil god, Sharkmen, has created a game for his amusement.  To entertain himself, each victim has been given another combatant to kill.  If the fighter happens to kill the wrong player, the angry Sharkmen will send a furious wave of health stealing punishment to the offender. The last killer standing wins the divine, voluptuous love of Sharkmen. Let the ritual begin; welcome to Sacrifice your Friends!\n\n\n Created by Joseph Fedden and Peter Menke during Global Game Jam 2016.";
+  startText = new createjs.Text(story, "25px Roboto", "#00B33C");
+  startText.x = 50;
+  startText.y = 100;
+  startText.lineWidth = window.innerWidth - 100;
+  stage.addChild(startText);
 }
 
 //Creates handleTick function to handle the tick
@@ -133,6 +148,8 @@ function handleTick(event) {
       // sync rectangle with positon
       play.rect.x = play.x + 35;
       play.rect.y = play.y + 26;
+      play.nameText.x = play.x;
+      play.nameText.y = play.y;
 
       // Apply gravity
     var grav = 1 - 0.01;
@@ -168,6 +185,18 @@ function handleTick(event) {
               play.y -= overlap.y;
           }
       }
+
+      if (play.rect.y < -5 || play.rect.y > window.innerHeight || play.hp < 0) {
+        socket.emit('release player', play.username);
+        stage.removeChild(play);
+        stage.removeChild(play.nameText);
+
+        // announce to the server that you are dead
+        socket.emit('announce death', play.username);
+
+
+        delete players[play.username];
+      }
   }
 }
 
@@ -190,18 +219,20 @@ function makeSpriteSheet(x) {
     images: [x],
     frames: {width: 120, height: 87},
     animations: {
-        walk: [18, 23],
-              idle: {
+        walk: [18, 23,"idle"],
+          idle: {
                   frames: [7, 9],
                   speed: 0.2
               },
               jump: {
                   frames: [12,15],
-                  speed: 0.2
+                  speed: 0.2,
+                  next: "idle"
               },
         attack: {
           frames: [0,2],
-          speed: 0.5
+          speed: 0.5,
+          next: "idle"
         }
     }
   });
@@ -220,10 +251,15 @@ function makePlayer(prop) {
   player.rect = {x: player.x, y: player.y, width: prop.width, height: prop.height}
   player.vel = {dx: prop.veldx, dy: prop.veldy};
   player.username = prop.username;
+  player.hp = 100;
+  player.nameText = new createjs.Text(prop.username + "(" + player.hp + "hp)", "20px Arial","#0000ff");
+  player.nameText.x = player.x;
+  player.nameText.y = player.y;
 
 
   return player;
 }
+
 
 function makePlatform(info) {
   var rect = {
@@ -270,7 +306,6 @@ function makeLevel() {
   }
 
   platforms.push(platform);
-  console.log(platform.x + " " + platform.y);
   stage.addChild(platform.shape);
 }
   return level;

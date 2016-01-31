@@ -7,6 +7,7 @@ function controller() {
 
                     var pressed = [];
                     var target = 'none';
+                    var life = true;
 
                     pressed['up'] = false;
                     pressed['right'] = false;
@@ -20,29 +21,46 @@ function controller() {
                     $('#name').text('Name: ' + username);
                     $('#character').text('Character: ' + ch);
 
-
                     socket.on('deal target', function(targ, person) {
-                        console.log('ping');
-                        if (username == 'person') {
+                        if (username == person) {
                             target = targ;
-                            $('#instructions').append('New Target: ' + target);
+                            console.log('WE MADE IT BOYDS');
+                            $('#instructions').append('<p>New Target: ' + target + '</p>');
                         }
+                    });
+
+                    socket.on('release player', function(uname) {
+                      console.log('releasing');
+                      if(username == uname) {
+                        console.log('you died');
+                        life = false;
+                        location.reload();
+                      }
+                    });
+
+                    socket.on('announce death', function(killed) {
+                      console.log('rip: ' + killed)
+                      if (killed == target) {
+                        // request new target
+                        console.log('requesting new target')
+                        socket.emit('request new target', username);
+                      }
                     });
 
                     kd.run(function () {
                         kd.tick();
 
                         if (pressed['up']) {
-                            socket.emit('stream input', 'up', username);
+                            socket.emit('stream input', 'up', username, target);
                         }
                         if (pressed['a']) {
-                            socket.emit('stream input', 'a', username);
+                            socket.emit('stream input', 'a', username, target);
                         }
                         if (pressed['right']) {
-                            socket.emit('stream input', 'right', username);
+                            socket.emit('stream input', 'right', username, target);
                         }
                         if (pressed['left']) {
-                            socket.emit('stream input', 'left', username);
+                            socket.emit('stream input', 'left', username, target);
                         }
                     });
                     // RIGHT
@@ -50,7 +68,7 @@ function controller() {
                         $('#right').attr('src', '/assets/keys/dark-right.png');
                     });
                     kd.RIGHT.down(function() {
-                        socket.emit('stream input', 'right', username);
+                        socket.emit('stream input', 'right', username, target);
                     });
                     kd.RIGHT.up(function() {
                         $('#right').attr('src', '/assets/keys/line-right.png');
@@ -61,7 +79,7 @@ function controller() {
                         $('#left').attr('src', '/assets/keys/dark-left.png');
                     });
                     kd.LEFT.down(function() {
-                        socket.emit('stream input', 'left', username);
+                        socket.emit('stream input', 'left', username, target);
                     });
                     kd.LEFT.up(function() {
                         $('#left').attr('src', '/assets/keys/line-left.png');
@@ -69,13 +87,13 @@ function controller() {
 
                     // UP
                     kd.UP.press(function() {
-                        $('#up').attr('src', '/assets/keys/dark-up.png');
+                        $('#up').attr('src', '/assets/keys/dark-up.png', target);
                     });
                     kd.UP.down(function() {
                         socket.emit('stream input', 'up', username);
                     });
                     kd.UP.up(function() {
-                        $('#up').attr('src', '/assets/keys/line-up.png');
+                        $('#up').attr('src', '/assets/keys/line-up.png', target);
                     });
 
                     // A
@@ -83,7 +101,7 @@ function controller() {
                         $('#a').attr('src', '/assets/keys/dark-a.png', username);
                     });
                     kd.DOWN.down(function() {
-                        socket.emit('stream input', 'a', username);
+                        socket.emit('stream input', 'a', username, target);
                     });
                     kd.DOWN.up(function() {
                         $('#a').attr('src', '/assets/keys/line-a.png');
@@ -101,7 +119,7 @@ function controller() {
                     // Press A
                     $('.shield.a').on('touchstart', function(e) {
                         pressed['a'] = true;
-                        $('#a').attr('src', '/assets/keys/dark-a.png', username);
+                        $('#a').attr('src', '/assets/keys/dark-a.png');
                     });
                     $('.shield.a').on('touchend', function(e) {
                         pressed['a'] = false;
