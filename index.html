@@ -1,19 +1,102 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> <!--320-->
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <title>GGJ</title>
   </head>
-  <body onload="init();">
+  <body>
+
+      <display style="display: none">
+          You are the display!
+          <canvas id="gameCanvas"></canvas>
+          <ul></ul>
+      </display>
+
+      <controller style="display: none">
+          <div id='register'>
+              <form id='register-form' class="ink-form">
+                  <div class="control-group all-33" id="input-container">
+                      <div class="column-group gutters">
+                          <label for="inline-name" class="all-20 align-right">Username</label>
+                          <div class="control all-80">
+                              <input type="text" name="name" id="inline-name" maxlength="8">
+                          </div>
+                      </div>
+                  </div>
+
+                  <div id="img-container">
+                    <figure class="ink-image" id="gentleman">
+                        <img src="/assets/thumbnails/thumbnail - gentleman.png">
+                        <figcaption class="dark">
+                          Gentleman
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="mechanic">
+                        <img src="/assets/thumbnails/thumbnail - mechanic.png">
+                        <figcaption class="dark">
+                          Mechanic
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="ninja">
+                        <img src="/assets/thumbnails/thumbnail - ninja.png">
+                        <figcaption class="dark">
+                          Ninja
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="pirate">
+                        <img src="/assets/thumbnails/thumbnail - pirate.png">
+                        <figcaption class="dark">
+                          Pirate
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="ranger">
+                        <img src="/assets/thumbnails/thumbnail - ranger.png">
+                        <figcaption class="dark">
+                          ranger
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="samurai">
+                        <img src="/assets/thumbnails/thumbnail - samurai.png">
+                        <figcaption class="dark">
+                          Samurai
+                        </figcaption>
+                    </figure>
+                    <figure class="ink-image" id="viking">
+                        <img src="/assets/thumbnails/thumbnail - viking.png">
+                        <figcaption class="dark">
+                          Viking
+                        </figcaption>
+                    </figure>
+                  </div>
+              </form>
+          </div>
+          <div id='play' style="display: none">
+              <div id='name'></div>
+              <div id='character'></div>
+              <br>
+              <div id='instructions'>Instruction 1 <br> Instruction 2 <br> Instruction 3</div>
+              <div id='controls'>
+                  <img src="/assets/keys/blank.png"></img>
+                  <img src="/assets/keys/line-up.png" class="key" id="up"></img>
+                  <img src="/assets/keys/blank.png"></img>
+
+                  <img src="/assets/keys/line-left.png" class="key" id="left"></img>
+                  <img src="/assets/keys/line-a.png" class="key" id="a"></img>
+                  <img src="/assets/keys/line-right.png" class="key" id="right"></img>
+              </div>
+          </div>
+      </controller>
+
       <script src="/socket.io/socket.io.js"></script>
       <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-      <script src="/script.js"></script>
 
-      <canvas id="gameCanvas"></canvas>
       <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
       <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js?71631"></script>
       <script src="https://jeremyckahn.github.io/keydrown/dist/keydrown.min.js"></script>
       <script src="https://raw.githubusercontent.com/jriecken/sat-js/master/SAT.min.js"></script>
+      <script src="js/display.js"></script>
+      <script src="js/controller.js"></script>
       <script src="js/canvas.js"></script>
   </body>
 </html>

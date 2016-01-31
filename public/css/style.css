@@ -9,3 +9,39 @@ html {
   padding: 0px;
   margin: 0px;
 }
+
+#input-container {
+    padding: 10px;
+    display: block;
+}
+
+#img-container {
+    clear: left;
+}
+
+figure {
+    width: 200px;
+float: left;
+}
+
+button {
+    display:block;
+}
+
+#controls {
+    width: 100vw;
+    max-width: 300px;
+    position: absolute;
+
+    bottom: 20px;
+
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+#controls img {
+    width: 32%;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
+}

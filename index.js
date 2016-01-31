@@ -9,13 +9,13 @@ app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 app.use(express.static(__dirname + '/public'));
-var hasDisplay = false;
 
 // Variables
 var hasDisplay = false;
+var users = [];
 
 // Fired when someone connects
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
 
     // Handles dealing out roles
     socket.on('send role', function(role) {
@@ -30,10 +30,10 @@ io.on('connection', function(socket){
     });
     socket.emit('request role');
 
-    // Fires when someone disconnects
-    socket.on('disconnect', function() {
-        hasDisplay = false;
-        socket.broadcast.emit('request check in');
+    socket.on('register user', function(user) {
+        socket.broadcast.emit('add user', user);
+        users[user.name] = {name: user.name, sock: socket, character: user.character}
+        console.log(users);
     });
 
     // sets hasDisplay to true if the display is assigned
@@ -41,6 +41,16 @@ io.on('connection', function(socket){
         if (info == 'display') {
             hasDisplay = true;
         }
+    });
+
+    socket.on('stream input', function(input) {
+        socket.broadcast.emit('display input', input);
+    });
+
+    // Fires when someone disconnects
+    socket.on('disconnect', function() {
+        hasDisplay = false;
+        socket.broadcast.emit('request check in');
     });
 });
 
