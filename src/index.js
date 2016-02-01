@@ -89,8 +89,19 @@ io.on('connection', function(socket) {
 // Starts server
 http.listen(80, function(){
     console.log('listening on *:80');
-    
-    require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-      console.log('To play, type this IP into the browser of your choice: '+add);
-    })
+
+    var os = require('os');
+
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+    for (var k2 in interfaces[k]) {
+        var address = interfaces[k][k2];
+        if (address.family === 'IPv4' && !address.internal) {
+            addresses.push(address.address);
+        }
+    }
+}
+
+console.log('Connect to: ' + addresses[0]);
 });

@@ -1,0 +1,11 @@
+[Windows]
+1. Download and Install Node.js (https://nodejs.org/en/download/)
+2. Execute 'run-windows.cmd'
+
+[Mac]
+1. Download and Install Node.js (https://nodejs.org/en/download/)
+2. Execute 'run-mac.command'
+
+[Linux]
+1. Download and Install Node.js (https://nodejs.org/en/download/)
+2. Run command 'node index.js' from project directory(may need sudo)
