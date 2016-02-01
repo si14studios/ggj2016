@@ -9,3 +9,11 @@
 [Linux]
 1. Download and Install Node.js (https://nodejs.org/en/download/)
 2. Run command 'node index.js' from project directory(may need sudo)
+
+To play it, run the app on one computer, and connect to it through other comptuers / phones.
+When you start the server, it will tell you what IP to connect to.
+Put that IP address into any browser (phone or computer) and choose your name and character.
+
+The first device to connect will display the game, every other device will control it.
+
+Choose your name and character on the controllers then press Begin Game on the display.
